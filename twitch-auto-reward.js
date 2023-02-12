@@ -12,11 +12,11 @@
 // ====================
 //      VARIABLES
 // ====================
-let targetNode;
-const targetSelector = '.community-points-summary [class*="ScTransitionBase"]';
+
 let compteur = 0;
 
-let channelInfoEl;
+const btnSelector = '[class*="ScCoreButtonSuccess"]';
+const idRecap = "recap-bonus-reward";
 
 // ====================
 //      FUNCTIONS
@@ -24,7 +24,7 @@ let channelInfoEl;
 /**
  * Wait for an Element exists
  * @param {*} selector
- * @returns Element
+ * @returns {Promise<HTMLElement>}
  *
  * https://stackoverflow.com/questions/5525071/how-to-wait-until-an-element-exists
  */
@@ -48,9 +48,14 @@ function waitForElm(selector) {
   });
 }
 
-function createObserver() {
+/**
+ * Create an observer
+ * @param {string} selector
+ */
+function createObserver(selector) {
   // Select the node that will be observed for mutations
-  targetNode = document.querySelector(targetSelector);
+  /** @type {HTMLElement | null} */
+  const targetNode = document.querySelector(selector);
 
   // Options for the observer (which mutations to observe)
   const config = { attributes: true, childList: true, subtree: true, characterData: true };
@@ -63,7 +68,7 @@ function createObserver() {
         // console.log("A child node has been added or removed.");
         // console.log(mutation);
 
-        clickButton();
+        collectPoints();
 
         // document.querySelector('[class*="ScCoreButtonSuccess"]')?.click();
       } else if (mutation.type === "attributes") {
@@ -76,47 +81,74 @@ function createObserver() {
   const observer = new MutationObserver(callback);
 
   // Start observing the target node for configured mutations
-  observer.observe(targetNode, config);
+  if (targetNode) {
+    observer.observe(targetNode, config);
+  }
 
   // Later, you can stop observing
   // observer.disconnect();
 }
 
-function clickButton() {
-  const rewardBtn = document.querySelector('[class*="ScCoreButtonSuccess"]');
-  if (rewardBtn) {
-    // const date = new Date();
-    // const dateFormatted = `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`;
-    // console.log(`Bouton Cliqué ${compteur++} fois ! ${dateFormatted}`);
-    rewardBtn.click();
+/**
+ * Click on channel point Button to collect channel points
+ */
+function clickButton(btnSelector) {
+  /** @type {HTMLButtonElement | null} */
+  const rewardBtn = document.querySelector(btnSelector);
+  rewardBtn?.click();
 
-    displayRecap();
+  // const date = new Date();
+  // const dateFormatted = `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`;
+  // console.log(`Bouton Cliqué ${compteur++} fois ! ${dateFormatted}`);
+}
+
+/**
+ * Initiate recap information
+ * @param {string} idEl
+ * @param {HTMLElement} parentEl
+ */
+function displayRecap(idEl, parentEl) {
+  const recapEl = document.createElement("div");
+  recapEl.setAttribute("id", idEl);
+
+  parentEl.append(recapEl);
+
+  const date = new Date();
+  const dateFormatted = `${date.toLocaleTimeString()}`;
+
+  const htmlEl = /*html*/ `
+      <p>Bonus récupéré <strong style="color:var(--color-text-live);">${compteur}</strong> fois. (${dateFormatted})</p>
+  `;
+  recapEl.innerHTML = htmlEl;
+}
+
+/**
+ * Update recap information
+ * @param {string} selectorId
+ */
+function updateRecap(selectorId) {
+  const date = new Date();
+  const dateFormatted = `${date.toLocaleTimeString()}`;
+
+  const htmlEl = /*html*/ `
+      <p>Bonus récupéré <strong style="color:var(--color-text-live);">${compteur++}</strong> fois. (${dateFormatted})</p>
+  `;
+
+  /** @type {HTMLElement | null} */
+  const recapEl = document.getElementById(selectorId);
+
+  if (recapEl) {
+    recapEl.innerHTML = htmlEl;
   }
 }
 
-function displayRecap() {
-  const date = new Date();
-  // const dateFormatted = `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`;
-  const dateFormatted = `${date.toLocaleTimeString()}`;
+/**
+ * Collect point by clicking on button and display recap
+ */
+function collectPoints() {
+  clickButton(btnSelector);
 
-  let recapEl = document.querySelector("#recap-bonus-reward");
-
-  if (!recapEl) {
-    recapEl = document.createElement("div");
-    recapEl.setAttribute("id", "recap-bonus-reward");
-
-    const htmlEl = /*html*/ `
-        <p>Bonus récupéré <strong style="color:var(--color-text-live);">${compteur++}</strong> fois. (${dateFormatted})</p>
-    `;
-    recapEl.innerHTML = htmlEl;
-
-    channelInfoEl.append(recapEl);
-  } else {
-    const htmlEl = /*html*/ `
-        <p>Bonus récupéré <strong style="color:var(--color-text-live);">${compteur++}</strong> fois. (${dateFormatted})</p>
-    `;
-    recapEl.innerHTML = htmlEl;
-  }
+  updateRecap(idRecap);
 }
 
 // ====================
@@ -127,27 +159,26 @@ function displayRecap() {
 
   console.log("<<<<< Twitch Auto Reward >>>>>");
 
-  // Utilisation version Promise
+  // Click on channel points button when it appears and create a new observer
+  const targetSelector = '.community-points-summary [class*="ScTransitionBase"]';
   waitForElm(targetSelector).then((elm) => {
     console.log("Element is ready :", elm);
 
-    clickButton();
+    collectPoints();
 
-    createObserver();
-
-    // const channelInfoEl = document.querySelector("div.channel-info-content .jUcRho");
-    // channelInfoEl.append("Chat ready");
+    createObserver(targetSelector);
   });
 
-  // Utilisation version Async/Await
-  // const elm = await waitForElm('.some-class');
-
-  // const channelInfoEl = document.querySelector('div.channel-info-content .jUcRho')
+  // Display recap when viewers count area is loaded
   waitForElm('[data-a-target="animated-channel-viewers-count"]').then((elm) => {
-    // channelInfoEl = document.querySelector("div.channel-info-content .jUcRho");
-    channelInfoEl = document.querySelector(".Layout-sc-1xcs6mc-0.dbWoZQ");
-    channelInfoEl.style.flexDirection = "column";
-    console.log("Viewers count Ready");
-    displayRecap();
+    /** @type {HTMLDivElement | null} */
+    const channelInfoEl = document.querySelector(".Layout-sc-1xcs6mc-0.dbWoZQ");
+
+    if (channelInfoEl) {
+      channelInfoEl.style.flexDirection = "column";
+      console.log("Viewers count Ready");
+
+      displayRecap(idRecap, channelInfoEl);
+    }
   });
 })();

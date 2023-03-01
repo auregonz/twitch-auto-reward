@@ -45,9 +45,19 @@ const recapBonusRewardId = "recap-bonus-reward";
 // ====================
 //        I18N
 // ====================
+/**
+ * User locale (fr-FR, es-ES, en-GB, en-US, de-DE...)
+ * format : langagueCode-regionIdentifier
+ */
 const locale = navigator.language;
+/**
+ * User languageCode
+ */
 const localeShort = locale.split("-")[0];
 
+/**
+ * Wording for internationalization
+ */
 const translations = {
   // French translations
   fr: {
@@ -61,9 +71,16 @@ const translations = {
   },
 };
 
-// console.log("display langage :", localeShort);
-// console.log("display langage :", translations[localeShort].prefix);
-// console.log("display langage :", translations[localeShort].suffix);
+/**
+ * List of available langagues for display
+ */
+const languages = Object.keys(translations);
+
+/**
+ * Display language
+ * If user's locale is not available for supported translations, display language is set to english
+ */
+const displayLang = languages.find((lang) => lang === localeShort) ?? "en";
 
 // ====================
 //      FUNCTIONS
@@ -172,9 +189,9 @@ function displayRecap() {
 
   const htmlEl = /*html*/ `
         <p>${
-          translations[localeShort].prefix
+          translations[displayLang].prefix
         } <strong style="color:var(--color-text-live);">${compteur++}</strong> ${
-    translations[localeShort].suffix
+    translations[displayLang].suffix
   } (${dateFormatted})</p>`;
 
   recapEl.innerHTML = htmlEl;

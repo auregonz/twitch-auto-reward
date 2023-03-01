@@ -43,6 +43,29 @@ const channelInfosSelector = ".Layout-sc-1xcs6mc-0.dbWoZQ";
 const recapBonusRewardId = "recap-bonus-reward";
 
 // ====================
+//        I18N
+// ====================
+const locale = navigator.language;
+const localeShort = locale.split("-")[0];
+
+const translations = {
+  // French translations
+  fr: {
+    prefix: "Bonus récupéré",
+    suffix: "fois.",
+  },
+  // English translations
+  en: {
+    prefix: "Bonus collected",
+    suffix: "times.",
+  },
+};
+
+// console.log("display langage :", localeShort);
+// console.log("display langage :", translations[localeShort].prefix);
+// console.log("display langage :", translations[localeShort].suffix);
+
+// ====================
 //      FUNCTIONS
 // ====================
 /**
@@ -148,8 +171,12 @@ function displayRecap() {
   }
 
   const htmlEl = /*html*/ `
-        <p>Bonus récupéré <strong style="color:var(--color-text-live);">${compteur++}</strong> fois. (${dateFormatted})</p>
-    `;
+        <p>${
+          translations[localeShort].prefix
+        } <strong style="color:var(--color-text-live);">${compteur++}</strong> ${
+    translations[localeShort].suffix
+  } (${dateFormatted})</p>`;
+
   recapEl.innerHTML = htmlEl;
 }
 

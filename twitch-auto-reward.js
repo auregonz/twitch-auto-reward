@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.0.1
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*
@@ -29,13 +29,12 @@ const rewardBtnSelector = '[class*="ScCoreButtonSuccess"]';
  * Selector for Channel Viewer Count
  * => Used to trigger displayRecap() for the first time
  */
-const channelViewerCountSelector =
-  '[data-a-target="animated-channel-viewers-count"]';
+const channelViewerCountSelector = '[data-a-target="animated-channel-viewers-count"]';
 /**
  * Selector for Channel infos : Viewer Count and uptime
  * => Will be used to add Auto collect Count
  */
-const channelInfosSelector = ".Layout-sc-1xcs6mc-0.dbWoZQ";
+const channelInfosSelector = ".Layout-sc-1xcs6mc-0.dgNKFN";
 
 /**
  * Id for Recap bonus Reward element
@@ -188,9 +187,7 @@ function displayRecap() {
   }
 
   const htmlEl = /*html*/ `
-        <p>${
-          translations[displayLang].prefix
-        } <strong style="color:var(--color-text-live);">${compteur++}</strong> ${
+        <p>${translations[displayLang].prefix} <strong style="color:var(--color-text-live);">${compteur++}</strong> ${
     translations[displayLang].suffix
   } (${dateFormatted})</p>`;
 

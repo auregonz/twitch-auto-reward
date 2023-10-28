@@ -34,7 +34,7 @@ const channelViewerCountSelector = '[data-a-target="animated-channel-viewers-cou
  * Selector for Channel infos : Viewer Count and uptime
  * => Will be used to add Auto collect Count
  */
-const channelInfosSelector = ".Layout-sc-1xcs6mc-0.dgNKFN";
+const channelInfosSelector = ".Layout-sc-1xcs6mc-0.llUbgd";
 
 /**
  * Id for Recap bonus Reward element

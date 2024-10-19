@@ -23,7 +23,7 @@ const targetSelector = '.community-points-summary [class*="ScTransitionBase"]';
 /**
  * Selector for Reward Button
  */
-const rewardBtnSelector = '[class*="ScCoreButtonSuccess"]';
+const rewardBtnSelector = '[class*="ScCoreButton"].bCfhNy';
 
 /**
  * Selector for Channel Viewer Count

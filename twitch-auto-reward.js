@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.1.0
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*
@@ -23,7 +23,7 @@ const targetSelector = '.community-points-summary [class*="ScTransitionBase"]';
 /**
  * Selector for Reward Button
  */
-const rewardBtnSelector = '[class*="ScCoreButton"].bCfhNy';
+const rewardBtnSelector = '[class*="ScCoreButton"]';
 
 /**
  * Selector for Channel Viewer Count
@@ -71,7 +71,7 @@ const translations = {
 };
 
 /**
- * List of available langagues for display
+ * List of available languages for display
  */
 const languages = Object.keys(translations);
 
@@ -159,7 +159,7 @@ function collectReward() {
   /**
    * @type {HTMLButtonElement}
    */
-  const btnEl = document.querySelector(rewardBtnSelector);
+  const btnEl = document.querySelector(`${targetSelector} ${rewardBtnSelector}`);
   if (btnEl) {
     btnEl.click();
 

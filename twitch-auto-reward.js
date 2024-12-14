@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      2.0.0
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*
@@ -26,15 +26,15 @@ const targetSelector = '.community-points-summary [class*="ScTransitionBase"]';
 const rewardBtnSelector = '[class*="ScCoreButton"]';
 
 /**
- * Selector for Channel Viewer Count
+ * Selector for Gift Button
  * => Used to trigger displayRecap() for the first time
  */
-const channelViewerCountSelector = '[data-a-target="animated-channel-viewers-count"]';
+const subgiftButton = '[data-a-target="gift-button"]';
 /**
- * Selector for Channel infos : Viewer Count and uptime
+ * Selector for Live Channel Stream Information : Gift and Subscribe buttons
  * => Will be used to add Auto collect Count
  */
-const channelInfosSelector = ".Layout-sc-1xcs6mc-0.llUbgd";
+const channelInfosSelector = '#live-channel-stream-information [data-target="channel-header-right"]';
 
 /**
  * Id for Recap bonus Reward element
@@ -132,12 +132,11 @@ function createObserver(selector) {
     // Use traditional 'for loops' for IE 11
     for (const mutation of mutationsList) {
       if (mutation.type === "childList") {
-        // console.log("A child node has been added or removed :", mutation);
+        // console.log(">>> A child node has been added or removed :", mutation);
 
         collectReward();
-      } else if (mutation.type === "attributes") {
-        // console.log("The " + mutation.attributeName + " attribute was modified.");
-        // console.log("attribute modified :", mutation.attributeName);
+        // } else if (mutation.type === "attributes") {
+        //   console.log(">>> Attribute modified :", mutation.attributeName);
       }
     }
   };
@@ -183,7 +182,7 @@ function displayRecap() {
     recapEl = document.createElement("div");
     recapEl.setAttribute("id", recapBonusRewardId);
 
-    channelInfoEl.append(recapEl);
+    channelInfoEl.prepend(recapEl);
   }
 
   const htmlEl = /*html*/ `
@@ -204,7 +203,7 @@ function displayRecap() {
 
   // Wait for parent of reward button is loaded to observe it and detect when Reward Button appears
   waitForElm(targetSelector).then((elm) => {
-    console.log("Element is ready :", elm);
+    console.log(">>> Element is ready :", elm);
 
     // Check to collect reward if reward button is already existing
     collectReward();
@@ -213,11 +212,11 @@ function displayRecap() {
   });
 
   // Wait for channel viewer count appears to display recap
-  waitForElm(channelViewerCountSelector).then((elm) => {
+  waitForElm(subgiftButton).then((elm) => {
     channelInfoEl = document.querySelector(channelInfosSelector);
-    channelInfoEl.style.flexDirection = "column";
+    // channelInfoEl.style.flexDirection = "column";
 
-    console.log("Viewers count Ready");
+    console.log(">>> Viewers count Ready");
 
     // Initialize recap infos
     displayRecap();

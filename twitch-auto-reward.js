@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      2.0.0
+// @version      2.0.1
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*
@@ -161,6 +161,7 @@ function collectReward() {
   const btnEl = document.querySelector(`${targetSelector} ${rewardBtnSelector}`);
   if (btnEl) {
     btnEl.click();
+    compteur++;
 
     displayRecap();
   }
@@ -186,9 +187,7 @@ function displayRecap() {
   }
 
   const htmlEl = /*html*/ `
-        <p>${translations[displayLang].prefix} <strong style="color:var(--color-text-live);">${compteur++}</strong> ${
-    translations[displayLang].suffix
-  } (${dateFormatted})</p>`;
+        <p>${translations[displayLang].prefix} <strong style="color:var(--color-text-live);">${compteur}</strong> ${translations[displayLang].suffix} (${dateFormatted})</p>`;
 
   recapEl.innerHTML = htmlEl;
 }

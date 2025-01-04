@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      2.0.1
+// @version      2.0.2
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*
@@ -26,15 +26,15 @@ const targetSelector = '.community-points-summary [class*="ScTransitionBase"]';
 const rewardBtnSelector = '[class*="ScCoreButton"]';
 
 /**
- * Selector for Gift Button
+ * Selector for Channel Viewer Count
  * => Used to trigger displayRecap() for the first time
  */
-const subgiftButton = '[data-a-target="gift-button"]';
+const subgiftButton = '[data-a-target="animated-channel-viewers-count"]';
 /**
- * Selector for Live Channel Stream Information : Gift and Subscribe buttons
+ * Selector for Live Channel Stream Information : Viewer Count and Uptime
  * => Will be used to add Auto collect Count
  */
-const channelInfosSelector = '#live-channel-stream-information [data-target="channel-header-right"]';
+const channelInfosSelector = ".Layout-sc-1xcs6mc-0.llUbgd";
 
 /**
  * Id for Recap bonus Reward element
@@ -183,7 +183,7 @@ function displayRecap() {
     recapEl = document.createElement("div");
     recapEl.setAttribute("id", recapBonusRewardId);
 
-    channelInfoEl.prepend(recapEl);
+    channelInfoEl.append(recapEl);
   }
 
   const htmlEl = /*html*/ `
@@ -213,7 +213,7 @@ function displayRecap() {
   // Wait for channel viewer count appears to display recap
   waitForElm(subgiftButton).then((elm) => {
     channelInfoEl = document.querySelector(channelInfosSelector);
-    // channelInfoEl.style.flexDirection = "column";
+    channelInfoEl.style.flexDirection = "column";
 
     console.log(">>> Viewers count Ready");
 

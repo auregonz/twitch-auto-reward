@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      2.0.3
+// @version      3.0.0
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*
@@ -12,7 +12,7 @@
 // ====================
 //      VARIABLES
 // ====================
-let targetNode;
+const INTERVAL = 5000;
 let compteur = 0;
 let channelInfoEl;
 
@@ -36,18 +36,6 @@ const channelViewerCount = '[data-a-target="animated-channel-viewers-count"]';
  * => Will be used to add Auto collect Count
  */
 const channelInfosSelector = ".Layout-sc-1xcs6mc-0.llUbgd";
-
-// === Version 2 - For recap on Action Bar (Follow, Notifications, Gift and Subscribe)
-/**
- * Selector for Gift Button
- * => Used to trigger displayRecap() for the first time
- */
-const subgiftButton = '[data-a-target="gift-button"]';
-/**
- * Selector for Live Channel Stream Information : Gift and Subscribe buttons
- * => Will be used to add Auto collect Count
- */
-const channelInfosActionBar = '#live-channel-stream-information [data-target="channel-header-right"]';
 
 /**
  * Id for Recap bonus Reward element
@@ -125,46 +113,6 @@ function waitForElm(selector) {
 }
 
 /**
- * Create an Oberver
- * @param {string} selector - Selector for the node to observe
- */
-function createObserver(selector) {
-  // Select the node that will be observed for mutations
-  targetNode = document.querySelector(selector);
-
-  // Options for the observer (which mutations to observe)
-  const config = {
-    attributes: true,
-    childList: true,
-    subtree: true,
-    characterData: true,
-  };
-
-  // Callback function to execute when mutations are observed
-  const callback = function (mutationsList, observer) {
-    // Use traditional 'for loops' for IE 11
-    for (const mutation of mutationsList) {
-      if (mutation.type === "childList") {
-        // console.log(">>> A child node has been added or removed :", mutation);
-
-        collectReward();
-        // } else if (mutation.type === "attributes") {
-        //   console.log(">>> Attribute modified :", mutation.attributeName);
-      }
-    }
-  };
-
-  // Create an observer instance linked to the callback function
-  const observer = new MutationObserver(callback);
-
-  // Start observing the target node for configured mutations
-  observer.observe(targetNode, config);
-
-  // Later, you can stop observing
-  // observer.disconnect();
-}
-
-/**
  * Click on Reward Button if exist and call displayRecap
  */
 function collectReward() {
@@ -213,16 +161,6 @@ function displayRecap() {
 
   console.log("<<<<< Twitch Auto Reward >>>>>");
 
-  // Wait for parent of reward button is loaded to observe it and detect when Reward Button appears
-  waitForElm(targetSelector).then((elm) => {
-    console.log(">>> Element is ready :", elm);
-
-    // Check to collect reward if reward button is already existing
-    collectReward();
-
-    createObserver(targetSelector);
-  });
-
   // Wait for channel viewer count appears to display recap
   waitForElm(channelViewerCount).then((elm) => {
     channelInfoEl = document.querySelector(channelInfosSelector);
@@ -233,4 +171,7 @@ function displayRecap() {
     // Initialize recap infos
     displayRecap();
   });
+
+  // Periodically check for colecting reward
+  setInterval(collectReward, INTERVAL);
 })();

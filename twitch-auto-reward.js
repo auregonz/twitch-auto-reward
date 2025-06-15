@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch Auto Reward
 // @namespace    http://tampermonkey.net/
-// @version      3.0.0
+// @version      3.0.1
 // @description  Automatically collect Specials Bonus
 // @author       auregonz
 // @match        https://www.twitch.tv/*
@@ -35,7 +35,7 @@ const channelViewerCount = '[data-a-target="animated-channel-viewers-count"]';
  * Selector for Live Channel Stream Information : Viewer Count and Uptime
  * => Will be used to add Auto collect Count
  */
-const channelInfosSelector = ".Layout-sc-1xcs6mc-0.llUbgd";
+const channelInfosSelector = "#live-channel-stream-information .metadata-layout__support + div > div + div";
 
 /**
  * Id for Recap bonus Reward element
